@@ -1,4 +1,4 @@
-import { textChangeRangeIsUnchanged } from 'typescript';
+import data from './data/animations/girl';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -6,7 +6,10 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'Game',
 };
 
-let key: Phaser.Input.Keyboard.Key;
+let S: Phaser.Input.Keyboard.Key;
+let D: Phaser.Input.Keyboard.Key;
+let A: Phaser.Input.Keyboard.Key;
+let W: Phaser.Input.Keyboard.Key;
 let sprite: Phaser.GameObjects.Sprite;
 
 export class GameScene extends Phaser.Scene {
@@ -26,31 +29,53 @@ export class GameScene extends Phaser.Scene {
   }
 
   public create() {
-    this.anims.create({
-      key: 'idle',
-      frames: this.anims.generateFrameNumbers('girlsheet', {
-        start: 0,
-        end: 0,
-      }),
+    data.forEach((datum) => {
+      this.anims.create({
+        key: datum.key,
+        frames: this.anims.generateFrameNumbers('girlsheet', {
+          frames: datum.frames,
+        }),
+        frameRate: datum.frameRate,
+        repeat: datum.repeat,
+      });
     });
-    this.anims.create({
-      key: 'walkdown',
-      frameRate: 6,
-      frames: this.anims.generateFrameNumbers('girlsheet', {
-        frames: [16, 0, 32, 0],
-      }),
-      repeat: -1,
-    });
-    sprite = this.add.sprite(200, 200, 'spritesheet').setScale(4).play('idle');
-    key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
+    sprite = this.add
+      .sprite(200, 200, 'spritesheet')
+      .setScale(4)
+      .play('facedown');
+    S = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
   }
 
   public update() {
-    if (Phaser.Input.Keyboard.JustDown(key)) {
+    if (Phaser.Input.Keyboard.JustDown(S)) {
       sprite.anims.play('walkdown');
     }
-    if (Phaser.Input.Keyboard.JustUp(key)) {
-      sprite.anims.play('idle');
+    if (Phaser.Input.Keyboard.JustUp(S)) {
+      sprite.anims.play('facedown');
+    }
+    if (Phaser.Input.Keyboard.JustDown(D)) {
+      sprite.setFlipX(true);
+      sprite.anims.play('walkright');
+    }
+    if (Phaser.Input.Keyboard.JustUp(D)) {
+      sprite.anims.play('faceright');
+    }
+    if (Phaser.Input.Keyboard.JustDown(A)) {
+      sprite.setFlipX(false);
+      sprite.anims.play('walkright');
+    }
+    if (Phaser.Input.Keyboard.JustUp(A)) {
+      sprite.anims.play('faceright');
+    }
+    if (Phaser.Input.Keyboard.JustDown(W)) {
+      sprite.anims.play('walkup');
+    }
+    if (Phaser.Input.Keyboard.JustUp(W)) {
+      sprite.anims.play('faceup');
     }
   }
 }
