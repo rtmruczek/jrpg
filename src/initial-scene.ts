@@ -13,10 +13,6 @@ let W: Phaser.Input.Keyboard.Key;
 let sprite: Phaser.GameObjects.Sprite;
 
 export class GameScene extends Phaser.Scene {
-  private square: Phaser.GameObjects.Rectangle & {
-    body: Phaser.Physics.Arcade.Body;
-  };
-
   constructor() {
     super(sceneConfig);
   }
@@ -40,7 +36,7 @@ export class GameScene extends Phaser.Scene {
       });
     });
 
-    sprite = this.add
+    sprite = this.physics.add
       .sprite(200, 200, 'spritesheet')
       .setScale(4)
       .play('facedown');
@@ -52,29 +48,37 @@ export class GameScene extends Phaser.Scene {
 
   public update() {
     if (Phaser.Input.Keyboard.JustDown(S)) {
+      sprite.body.velocity.y = 50;
       sprite.anims.play('walkdown');
     }
     if (Phaser.Input.Keyboard.JustUp(S)) {
+      sprite.body.velocity.y = 0;
       sprite.anims.play('facedown');
     }
     if (Phaser.Input.Keyboard.JustDown(D)) {
+      sprite.body.velocity.x = 50;
       sprite.setFlipX(true);
       sprite.anims.play('walkright');
     }
     if (Phaser.Input.Keyboard.JustUp(D)) {
+      sprite.body.velocity.x = 0;
       sprite.anims.play('faceright');
     }
     if (Phaser.Input.Keyboard.JustDown(A)) {
+      sprite.body.velocity.x = -50;
       sprite.setFlipX(false);
       sprite.anims.play('walkright');
     }
     if (Phaser.Input.Keyboard.JustUp(A)) {
+      sprite.body.velocity.x = 0;
       sprite.anims.play('faceright');
     }
     if (Phaser.Input.Keyboard.JustDown(W)) {
+      sprite.body.velocity.y = -50;
       sprite.anims.play('walkup');
     }
     if (Phaser.Input.Keyboard.JustUp(W)) {
+      sprite.body.velocity.y = 0;
       sprite.anims.play('faceup');
     }
   }
