@@ -43,6 +43,9 @@ module.exports = {
         {
           from: 'index.html',
         },
+        {
+          from: 'assets/**',
+        },
       ],
     }),
     new webpack.DefinePlugin({
