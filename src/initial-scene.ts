@@ -47,10 +47,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   public update() {
-    const previousVelocity = {
-      x: sprite.body.velocity.x,
-      y: sprite.body.velocity.y,
-    };
+    const previousVelocity = new Phaser.Math.Vector2(
+      sprite.body.velocity.x,
+      sprite.body.velocity.y,
+    );
+    const previousAngle = 
+      (previousVelocity.angle() * Phaser.Math.RAD_TO_DEG) % 360;
+
     if (Phaser.Input.Keyboard.JustDown(S)) {
       sprite.body.velocity.y = 50;
     }
@@ -76,33 +79,51 @@ export class GameScene extends Phaser.Scene {
       sprite.body.velocity.y = 0;
     }
 
-    if (sprite.body.velocity.y > 0) {
-      sprite.anims.play('walkdown', true);
-    }
-    if (sprite.body.velocity.y < 0) {
-      sprite.anims.play('walkup', true);
-    }
-    if (sprite.body.velocity.x > 0) {
-      sprite.setFlipX(true);
-      sprite.anims.play('walkleft', true);
-    }
-    if (sprite.body.velocity.x < 0) {
-      sprite.setFlipX(false);
-      sprite.anims.play('walkleft', true);
-    }
-    if (previousVelocity.x > 0 && sprite.body.velocity.x === 0) {
-      sprite.setFlipX(true);
-      sprite.anims.play('faceleft', true);
-    }
-    if (previousVelocity.x < 0 && sprite.body.velocity.x === 0) {
-      sprite.setFlipX(false);
-      sprite.anims.play('faceleft', true);
-    }
-    if (previousVelocity.y > 0 && sprite.body.velocity.y === 0) {
-      sprite.anims.play('facedown', true);
-    }
-    if (previousVelocity.y < 0 && sprite.body.velocity.y === 0) {
-      sprite.anims.play('faceup', true);
+    const velocity = new Phaser.Math.Vector2(
+      sprite.body.velocity.x, 
+      sprite.body.velocity.y
+    );
+    const angle = (velocity.angle() * Phaser.Math.RAD_TO_DEG) % 360;
+
+    // We're moving
+    if (velocity.length() > 0)  {
+      // what direction are we facing?
+      // Note see angle() method (+x is 0)
+      if (angle < 90) {
+        sprite.setFlipX(true);
+        sprite.anims.play('walkleft', true);
+      }
+      else if (angle < 180) {
+        sprite.anims.play('walkdown', true);
+      }
+      else if (angle < 270) {
+        sprite.setFlipX(false);
+        sprite.anims.play('walkleft', true);
+      }
+      else {
+        sprite.anims.play('walkup', true);
+      }
+    } 
+    // We're not moving
+    else {
+      // ... but we were moving
+      if (previousVelocity.length() > 0) {
+        // what direction were we facing?
+        if (previousAngle < 90) {
+          sprite.setFlipX(true);
+          sprite.anims.play('faceleft', true);
+        }
+        else if (previousAngle < 180) {
+          sprite.anims.play('facedown', true);
+        }
+        else if (previousAngle < 270) {
+          sprite.setFlipX(false);
+          sprite.anims.play('faceleft', true);
+        }
+        else {
+          sprite.anims.play('faceup', true);
+        }
+      }
     }
   }
 }
