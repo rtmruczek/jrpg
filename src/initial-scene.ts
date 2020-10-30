@@ -1,4 +1,3 @@
-import { Vector } from 'matter';
 import data from './data/animations/girl';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
