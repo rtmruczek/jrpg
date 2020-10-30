@@ -4,7 +4,7 @@ export default [
     frames: [0],
   },
   {
-    key: 'faceright',
+    key: 'faceleft',
     frames: [1],
   },
   {
@@ -18,7 +18,7 @@ export default [
     repeat: -1,
   },
   {
-    key: 'walkright',
+    key: 'walkleft',
     frameRate: 6,
     frames: [17, 1, 33, 1],
     repeat: -1,

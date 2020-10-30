@@ -47,39 +47,62 @@ export class GameScene extends Phaser.Scene {
   }
 
   public update() {
+    const previousVelocity = {
+      x: sprite.body.velocity.x,
+      y: sprite.body.velocity.y,
+    };
     if (Phaser.Input.Keyboard.JustDown(S)) {
       sprite.body.velocity.y = 50;
-      sprite.anims.play('walkdown');
     }
     if (Phaser.Input.Keyboard.JustUp(S)) {
       sprite.body.velocity.y = 0;
-      sprite.anims.play('facedown');
     }
     if (Phaser.Input.Keyboard.JustDown(D)) {
       sprite.body.velocity.x = 50;
-      sprite.setFlipX(true);
-      sprite.anims.play('walkright');
     }
     if (Phaser.Input.Keyboard.JustUp(D)) {
       sprite.body.velocity.x = 0;
-      sprite.anims.play('faceright');
     }
     if (Phaser.Input.Keyboard.JustDown(A)) {
       sprite.body.velocity.x = -50;
-      sprite.setFlipX(false);
-      sprite.anims.play('walkright');
     }
     if (Phaser.Input.Keyboard.JustUp(A)) {
       sprite.body.velocity.x = 0;
-      sprite.anims.play('faceright');
     }
     if (Phaser.Input.Keyboard.JustDown(W)) {
       sprite.body.velocity.y = -50;
-      sprite.anims.play('walkup');
     }
     if (Phaser.Input.Keyboard.JustUp(W)) {
       sprite.body.velocity.y = 0;
-      sprite.anims.play('faceup');
+    }
+
+    if (sprite.body.velocity.y > 0) {
+      sprite.anims.play('walkdown', true);
+    }
+    if (sprite.body.velocity.y < 0) {
+      sprite.anims.play('walkup', true);
+    }
+    if (sprite.body.velocity.x > 0) {
+      sprite.setFlipX(true);
+      sprite.anims.play('walkleft', true);
+    }
+    if (sprite.body.velocity.x < 0) {
+      sprite.setFlipX(false);
+      sprite.anims.play('walkleft', true);
+    }
+    if (previousVelocity.x > 0 && sprite.body.velocity.x === 0) {
+      sprite.setFlipX(true);
+      sprite.anims.play('faceleft', true);
+    }
+    if (previousVelocity.x < 0 && sprite.body.velocity.x === 0) {
+      sprite.setFlipX(false);
+      sprite.anims.play('faceleft', true);
+    }
+    if (previousVelocity.y > 0 && sprite.body.velocity.y === 0) {
+      sprite.anims.play('facedown', true);
+    }
+    if (previousVelocity.y < 0 && sprite.body.velocity.y === 0) {
+      sprite.anims.play('faceup', true);
     }
   }
 }
