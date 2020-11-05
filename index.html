@@ -11,18 +11,30 @@
     <meta name="MobileOptimized" content="320" />
     <meta http-equiv="cleartype" content="on" />
     <style>
+      @font-face {
+        font-family: 'Super Legend Boy';
+        src: url('assets/SuperLegendBoy-4w8y.ttf') format('truetype');
+      }
+
+      .text.normal {
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: none;
+        font-smoothing: none;
+        font-family: 'Super Legend Boy';
+      }
       html,
       body,
       canvas {
         margin: 0 !important;
         padding: 0 !important;
         overflow: hidden !important;
+        z-index: 1;
       }
     </style>
   </head>
   <body>
-    <div id="content"></div>
     <script src="vendors.bundle.js"></script>
     <script src="app.bundle.js"></script>
+    <div id="content"></div>
   </body>
 </html>

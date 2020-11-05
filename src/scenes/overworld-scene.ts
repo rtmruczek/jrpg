@@ -1,9 +1,9 @@
-import data from './data/animations/girl';
+import data from '../data/animations/girl';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
-  key: 'Game',
+  key: 'overworld',
 };
 
 let sprite: Phaser.GameObjects.Sprite;
@@ -12,7 +12,7 @@ let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
 const playerSpeed = 100;
 
-export class GameScene extends Phaser.Scene {
+export default class OverworldScene extends Phaser.Scene {
   constructor() {
     super(sceneConfig);
   }

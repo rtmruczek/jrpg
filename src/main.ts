@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
-import { GameScene } from './initial-scene';
+import OverworldScene from './scenes/overworld-scene';
+import BattleScene from './scenes/battle-scene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Sample',
@@ -7,8 +8,8 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
 
   scale: {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 1440,
+    height: 900,
   },
 
   physics: {
@@ -22,7 +23,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
   },
   parent: 'game',
-  scene: GameScene,
+  scene: BattleScene,
   backgroundColor: '#333333',
 };
 
