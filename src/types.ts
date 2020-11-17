@@ -1,6 +1,6 @@
-type AnimationConfig {
-    key: string;
-    frames: number[];
-    repeat?: number;
-    frameRate?: number;
-}
+type AnimationConfig = {
+  key: string;
+  frames: number[];
+  repeat?: number;
+  frameRate?: number;
+};
