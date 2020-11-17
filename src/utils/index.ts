@@ -13,3 +13,20 @@ export function getMap(scene: Phaser.Scene) {
   map.createStaticLayer(0, tileset, 0, 0);
   return map;
 }
+
+export function bootstrapAnimations(
+  scene: Phaser.Scene,
+  animationConfigs: AnimationConfig[],
+  spritesheetName: string
+) {
+  animationConfigs.forEach((datum) => {
+    scene.anims.create({
+      key: datum.key,
+      frames: scene.anims.generateFrameNumbers(spritesheetName, {
+        frames: datum.frames,
+      }),
+      frameRate: datum.frameRate,
+      repeat: datum.repeat,
+    });
+  });
+}

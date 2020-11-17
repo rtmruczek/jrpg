@@ -1,4 +1,4 @@
-export default [
+const animations: AnimationConfig[] = [
   {
     key: 'facedown',
     frames: [0],
@@ -30,3 +30,5 @@ export default [
     repeat: -1,
   },
 ];
+
+export default animations;

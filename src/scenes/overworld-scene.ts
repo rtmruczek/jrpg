@@ -1,4 +1,5 @@
 import data from '../data/animations/girl';
+import { bootstrapAnimations } from '../utils';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -33,16 +34,7 @@ export default class OverworldScene extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    data.forEach((datum) => {
-      this.anims.create({
-        key: datum.key,
-        frames: this.anims.generateFrameNumbers('girlsheet', {
-          frames: datum.frames,
-        }),
-        frameRate: datum.frameRate,
-        repeat: datum.repeat,
-      });
-    });
+    bootstrapAnimations(this, data, 'girlsheet');
 
     sprite = this.physics.add
       .sprite(2250, 2250, 'spritesheet')
