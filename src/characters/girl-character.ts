@@ -11,15 +11,32 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+
+    // HACKHACK: modify bounds to align collisions with offset ("half water") tiles
+    this.body.setOffset(-this.body.width, 0);
+    this.body.setSize(this.body.width * 3, this.body.height + 24);
+
     scene.events.addListener(
       'OverworldState.OS_BattleTransition',
       this.handleBattleTransition,
       this
     );
 
+    scene.physics.world.on(
+      Phaser.Physics.Arcade.Events.TILE_COLLIDE,
+      this.handleTileCollision,
+      this
+    );
+
     this.anims.play('facedown');
 
     cursors = scene.input.keyboard.createCursorKeys();
+  }
+
+  private handleTileCollision() {
+    /*
+    this.body.velocity.x = 0;
+    this.body.velocity.y = 0;*/
   }
 
   private handleBattleTransition() {
