@@ -11,10 +11,21 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    scene.events.addListener(
+      'OverworldState.OS_BattleTransition',
+      this.handleBattleTransition,
+      this
+    );
 
     this.anims.play('facedown');
 
     cursors = scene.input.keyboard.createCursorKeys();
+  }
+
+  private handleBattleTransition() {
+    this.setActive(false);
+    this.body.velocity.x = 0;
+    this.body.velocity.y = 0;
   }
 
   private updateMovement() {

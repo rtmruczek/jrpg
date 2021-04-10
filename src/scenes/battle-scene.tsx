@@ -8,7 +8,7 @@ import { bootstrapAnimations } from '../utils';
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
-  key: 'Game',
+  key: 'battle',
 };
 
 export default class BattleScene extends Phaser.Scene {
