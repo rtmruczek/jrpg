@@ -85,28 +85,23 @@ export default class OverworldScene extends Phaser.Scene {
       // refactor ->> this should be data driven
       // e.g., TransitionAnimation { [Animations/Effects], NextScene };
 
-      // flash
+      // flash and zoom out
       this.cameras.main.addListener(
-        Phaser.Cameras.Scene2D.Events.FLASH_COMPLETE,
+        Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
         (): void => {
-          // then zoom out
+          // then zoom in and fade to black
           this.cameras.main.addListener(
             Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
             (): void => {
-              // then zoom in
-              this.cameras.main.addListener(
-                Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
-                (): void => {
-                  // then enter battle scene
-                  this.scene.start('battle');
-                }
-              );
-              this.cameras.main.zoomTo(7, 150);
+              // then enter battle scene
+              this.scene.start('battle');
             }
           );
-          this.cameras.main.zoomTo(2, 180);
+          this.cameras.main.fade();
+          this.cameras.main.zoomTo(7, 200);
         }
       );
+      this.cameras.main.zoomTo(2, 350);
       this.cameras.main.flash();
     }
   }
