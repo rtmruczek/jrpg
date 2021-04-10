@@ -46,6 +46,7 @@ export default class OverworldScene extends Phaser.Scene {
     this.cameras.main.setZoom(4);
   }
 
+  // refactor ->> "Battle / Encounter" System should determine this
   private shouldEnterBattle() {
     // distance player should move between rolls
     const stepDistance = 1000;
@@ -75,11 +76,14 @@ export default class OverworldScene extends Phaser.Scene {
 
   private updatePlay() {
     if (this.shouldEnterBattle()) {
-      // refactor ->> move to separatte ts module, export event name
+      // refactor ->> move to separate ts module, export event name
       // events/overworld/BATTLE_TRANSITION
       this.events.emit('OverworldState.OS_BattleTransition');
 
       this.overworldState = OverworldState.OS_BattleTransition;
+
+      // refactor ->> this should be data driven
+      // e.g., TransitionAnimation { [Animations/Effects], NextScene };
 
       // flash
       this.cameras.main.addListener(
