@@ -7,14 +7,13 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
   previousAngle: number;
 
   constructor(scene: Phaser.Scene) {
-    super(scene, 2250, 2250, 'girlsheet');
+    super(scene, 2200, 2250, 'girlsheet');
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    // HACKHACK: modify bounds to align collisions with offset ("half water") tiles
-    this.body.setOffset(-this.body.width, 0);
-    this.body.setSize(this.body.width * 3, this.body.height + 24);
+    this.body.setSize(this.body.width, this.body.height * 0.75);
+    this.body.setOffset(0, this.height * 0.25);
 
     scene.events.addListener(
       'OverworldState.OS_BattleTransition',

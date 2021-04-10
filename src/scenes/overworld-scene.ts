@@ -17,9 +17,10 @@ let character: Phaser.GameObjects.Sprite;
 let map: Phaser.Tilemaps.Tilemap;
 
 export default class OverworldScene extends Phaser.Scene {
+  isEncountersEnabled: boolean = false;
   distanceFromLastEncounterRoll: number = 0;
   overworldState: OverworldState = OverworldState.OS_Play;
-  collisionLayer;
+  collisionLayer: Phaser.Tilemaps.StaticTilemapLayer;
 
   constructor() {
     super(sceneConfig);
@@ -40,10 +41,39 @@ export default class OverworldScene extends Phaser.Scene {
     this.sound.play('overworld', { loop: true });
     map = this.make.tilemap({ key: 'worldmap' });
     const tileset = map.addTilesetImage('watertiles', 'tiles', 32, 32, 1, 2);
-    // collide with solid water blocks
-    // FIXME: Set this to an array containing the IDs of water tiles
-    map.setCollision([12]);
+
+    // set collison tiles by id
+    map.setCollisionBetween(0, 3);
+    map.setCollisionBetween(5, 13);
+    map.setCollisionBetween(15, 24);
     this.collisionLayer = map.createStaticLayer(0, tileset, 0, 0);
+
+    // Visualize the colliding tiles
+    var debugGraphics = this.add.graphics();
+    debugGraphics.setScale(1);
+    map.renderDebug(debugGraphics, {
+      tileColor: new Phaser.Display.Color(0, 255, 0, 128),
+      collidingTileColor: new Phaser.Display.Color(255, 0, 0, 128),
+      faceColor: new Phaser.Display.Color(0, 0, 255, 128),
+    });
+
+    // input event handler for collision debug toggle
+    const debugCollision = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.F6
+    );
+    debugCollision.on('up', () => {
+      debugGraphics.visible = !debugGraphics.visible;
+    });
+
+    // input event handler for encounter debug toggle
+    const debugEncounters = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.F7
+    );
+    debugEncounters.on('up', () => {
+      this.isEncountersEnabled = !this.isEncountersEnabled;
+    });
+
+    debugGraphics.visible = false;
 
     bootstrapAnimations(this, data, 'girlsheet');
 
@@ -54,6 +84,10 @@ export default class OverworldScene extends Phaser.Scene {
 
   // refactor ->> "Battle / Encounter" System should determine this
   private shouldEnterBattle() {
+    if (!this.isEncountersEnabled) {
+      return false;
+    }
+
     // distance player should move between rolls
     const stepDistance = 1000;
 
@@ -76,8 +110,7 @@ export default class OverworldScene extends Phaser.Scene {
       // reset distance counter, roll
       this.distanceFromLastEncounterRoll = 0;
       const roll = Phaser.Math.Between(1, 10000);
-      //return encounterChance <= roll;
-      return false;
+      return encounterChance <= roll;
     }
   }
 
