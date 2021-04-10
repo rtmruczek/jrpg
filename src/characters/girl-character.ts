@@ -22,21 +22,9 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
       this
     );
 
-    scene.physics.world.on(
-      Phaser.Physics.Arcade.Events.TILE_COLLIDE,
-      this.handleTileCollision,
-      this
-    );
-
     this.anims.play('facedown');
 
     cursors = scene.input.keyboard.createCursorKeys();
-  }
-
-  private handleTileCollision() {
-    /*
-    this.body.velocity.x = 0;
-    this.body.velocity.y = 0;*/
   }
 
   private handleBattleTransition() {
