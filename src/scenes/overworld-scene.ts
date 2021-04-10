@@ -1,7 +1,6 @@
 import data from '../data/animations/girl';
 import { bootstrapAnimations } from '../utils';
 import GirlCharacter from '../characters/girl-character';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,

@@ -3,7 +3,6 @@ let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 const playerSpeed = 100;
 
 export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
-  shouldHandleInput: boolean = true;
   previousVelocity: Phaser.Math.Vector2;
   previousAngle: number;
 
