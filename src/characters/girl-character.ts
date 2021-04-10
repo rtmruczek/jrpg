@@ -7,12 +7,12 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
   previousAngle: number;
 
   constructor(scene: Phaser.Scene) {
-    super(scene, 2250, 2250, "girlsheet");
+    super(scene, 2250, 2250, 'girlsheet');
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.anims.play("facedown");
+    this.anims.play('facedown');
 
     cursors = scene.input.keyboard.createCursorKeys();
   }
@@ -57,14 +57,14 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
       // Note see angle() method (+x is 0)
       if (angle < 90) {
         this.setFlipX(true);
-        this.anims.play("walkleft", true);
+        this.anims.play('walkleft', true);
       } else if (angle < 180) {
-        this.anims.play("walkdown", true);
+        this.anims.play('walkdown', true);
       } else if (angle < 270) {
         this.setFlipX(false);
-        this.anims.play("walkleft", true);
+        this.anims.play('walkleft', true);
       } else {
-        this.anims.play("walkup", true);
+        this.anims.play('walkup', true);
       }
     }
     // We're not moving
@@ -74,14 +74,14 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
         // what direction were we facing?
         if (this.previousAngle < 90) {
           this.setFlipX(true);
-          this.anims.play("faceleft", true);
+          this.anims.play('faceleft', true);
         } else if (this.previousAngle < 180) {
-          this.anims.play("facedown", true);
+          this.anims.play('facedown', true);
         } else if (this.previousAngle < 270) {
           this.setFlipX(false);
-          this.anims.play("faceleft", true);
+          this.anims.play('faceleft', true);
         } else {
-          this.anims.play("faceup", true);
+          this.anims.play('faceup', true);
         }
       }
     }
