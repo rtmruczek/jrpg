@@ -25,6 +25,7 @@ export default class OverworldScene extends Phaser.Scene {
   }
 
   public preload() {
+    this.load.audio('overworld', 'assets/music/overworldpianoflute.mp3');
     this.load.image('tiles', 'assets/watertiles-extruded.png');
     this.load.tilemapTiledJSON('worldmap', 'assets/worldmap.json');
 
@@ -35,6 +36,7 @@ export default class OverworldScene extends Phaser.Scene {
   }
 
   public create() {
+    this.sound.play('overworld', { loop: true });
     map = this.make.tilemap({ key: 'worldmap' });
     const tileset = map.addTilesetImage('watertiles', 'tiles', 32, 32, 1, 2);
     map.createStaticLayer(0, tileset, 0, 0);
