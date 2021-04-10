@@ -23,7 +23,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
   },
   parent: 'game',
-  scene: OverworldScene,
+  scene: [OverworldScene, BattleScene],
   backgroundColor: '#333333',
 };
 

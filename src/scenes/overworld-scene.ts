@@ -1,6 +1,7 @@
 import data from '../data/animations/girl';
 import { bootstrapAnimations } from '../utils';
 import GirlCharacter from '../characters/girl-character';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -8,10 +9,18 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'overworld',
 };
 
-let sprite: Phaser.GameObjects.Sprite;
+enum OverworldState {
+  OS_Play,
+  OS_BattleTransition,
+}
+
+let character: Phaser.GameObjects.Sprite;
 let map: Phaser.Tilemaps.Tilemap;
 
 export default class OverworldScene extends Phaser.Scene {
+  distanceFromLastEncounterRoll: number = 0;
+  overworldState: OverworldState = OverworldState.OS_Play;
+
   constructor() {
     super(sceneConfig);
   }
@@ -33,10 +42,80 @@ export default class OverworldScene extends Phaser.Scene {
 
     bootstrapAnimations(this, data, 'girlsheet');
 
-    sprite = new GirlCharacter(this);
-    this.cameras.main.startFollow(sprite, true, 0.1, 0.1);
+    character = new GirlCharacter(this);
+    this.cameras.main.startFollow(character, true, 0.1, 0.1);
     this.cameras.main.setZoom(4);
   }
 
-  public update() {}
+  private shouldEnterBattle() {
+    // distance player should move between rolls
+    const stepDistance = 1000;
+
+    // chance of encounter per step (0.01% increments)
+    const encounterChance = 1;
+
+    const characterVelocity = new Phaser.Math.Vector2(
+      character.body.velocity.x,
+      character.body.velocity.y
+    );
+    this.distanceFromLastEncounterRoll += characterVelocity.length();
+
+    // if we haven't  moved enough to roll
+    if (this.distanceFromLastEncounterRoll < stepDistance) {
+      // dont roll, dont enter battle
+      return false;
+
+      // otherwise ...
+    } else {
+      // reset distance counter, roll
+      this.distanceFromLastEncounterRoll = 0;
+      const roll = Phaser.Math.Between(1, 10000);
+      return encounterChance <= roll;
+    }
+  }
+
+  private updatePlay() {
+    if (this.shouldEnterBattle()) {
+      // refactor ->> move to separatte ts module, export event name
+      // events/overworld/BATTLE_TRANSITION
+      this.events.emit('OverworldState.OS_BattleTransition');
+
+      this.overworldState = OverworldState.OS_BattleTransition;
+
+      // flash
+      this.cameras.main.addListener(
+        Phaser.Cameras.Scene2D.Events.FLASH_COMPLETE,
+        (): void => {
+          // then zoom out
+          this.cameras.main.addListener(
+            Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
+            (): void => {
+              // then zoom in
+              this.cameras.main.addListener(
+                Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
+                (): void => {
+                  // then enter battle scene
+                  this.scene.start('battle');
+                }
+              );
+              this.cameras.main.zoomTo(7, 150);
+            }
+          );
+          this.cameras.main.zoomTo(2, 180);
+        }
+      );
+      this.cameras.main.flash();
+    }
+  }
+
+  private updateTransition() {}
+
+  public update() {
+    switch (this.overworldState) {
+      case OverworldState.OS_Play:
+        this.updatePlay();
+      case OverworldState.OS_BattleTransition:
+        this.updateTransition();
+    }
+  }
 }
