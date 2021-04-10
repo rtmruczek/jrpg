@@ -19,6 +19,7 @@ let map: Phaser.Tilemaps.Tilemap;
 export default class OverworldScene extends Phaser.Scene {
   distanceFromLastEncounterRoll: number = 0;
   overworldState: OverworldState = OverworldState.OS_Play;
+  collisionLayer;
 
   constructor() {
     super(sceneConfig);
@@ -39,7 +40,10 @@ export default class OverworldScene extends Phaser.Scene {
     this.sound.play('overworld', { loop: true });
     map = this.make.tilemap({ key: 'worldmap' });
     const tileset = map.addTilesetImage('watertiles', 'tiles', 32, 32, 1, 2);
-    map.createStaticLayer(0, tileset, 0, 0);
+    // collide with solid water blocks
+    // FIXME: Set this to an array containing the IDs of water tiles
+    map.setCollision([12]);
+    this.collisionLayer = map.createStaticLayer(0, tileset, 0, 0);
 
     bootstrapAnimations(this, data, 'girlsheet');
 
@@ -72,11 +76,14 @@ export default class OverworldScene extends Phaser.Scene {
       // reset distance counter, roll
       this.distanceFromLastEncounterRoll = 0;
       const roll = Phaser.Math.Between(1, 10000);
-      return encounterChance <= roll;
+      //return encounterChance <= roll;
+      return false;
     }
   }
 
   private updatePlay() {
+    this.physics.collide(character, this.collisionLayer);
+
     if (this.shouldEnterBattle()) {
       // refactor ->> move to separate ts module, export event name
       // events/overworld/BATTLE_TRANSITION
