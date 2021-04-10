@@ -12,6 +12,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 };
 
 export default class BattleScene extends Phaser.Scene {
+  enterKey: Phaser.Input.Keyboard.Key;
   constructor() {
     super(sceneConfig);
   }
@@ -24,6 +25,9 @@ export default class BattleScene extends Phaser.Scene {
   }
 
   public create() {
+    this.enterKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
     bootstrapAnimations(this, data, 'girlsheet');
     this.physics.add
       .sprite(850, 400, 'spritesheet')
@@ -32,6 +36,12 @@ export default class BattleScene extends Phaser.Scene {
     this.cameras.main.setZoom(4);
 
     ReactDOM.render(<BattleUI />, document.getElementById('content'));
+  }
+
+  public update() {
+    if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+      this.scene.start('overworld');
+    }
   }
 }
 
