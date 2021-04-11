@@ -1,20 +1,23 @@
+import Character from './character';
+
 let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
 const playerSpeed = 3;
 
-export default class GirlCharacter extends Phaser.Physics.Matter.Sprite {
+export default class OverworldCharacter extends Character {
   previousVelocity: Phaser.Math.Vector2;
   previousAngle: number;
 
-  constructor(scene: Phaser.Scene) {
-    super(scene.matter.world, 2200, 2250, 'girlsheet');
+  constructor(
+    scene: Phaser.Scene,
+    locationX: number,
+    locationY: number,
+    texture: string,
+    animData: AnimationConfig[]
+  ) {
+    super(scene, locationX, locationY, texture, animData);
 
-    scene.add.existing(this);
-    scene.matter.world.add(this);
-
-    this.setIgnoreGravity(true);
-    this.setFixedRotation();
-    this.setBounce(0);
+    this.setActive(true);
 
     scene.events.addListener(
       'OverworldState.OS_BattleTransition',
@@ -29,8 +32,7 @@ export default class GirlCharacter extends Phaser.Physics.Matter.Sprite {
 
   private handleBattleTransition() {
     this.setActive(false);
-    this.body.velocity.x = 0;
-    this.body.velocity.y = 0;
+    this.setVelocity(0, 0);
   }
 
   private updateMovement() {
