@@ -23,4 +23,15 @@ export default class Character extends Phaser.Physics.Matter.Sprite {
     this.setFixedRotation();
     this.setBounce(0);
   }
+
+  static preloadCharacterByConfig(
+    scene: Phaser.Scene,
+    config: CharacterConfig
+  ) {
+    scene.load.spritesheet(
+      config.texture,
+      config.spritesheet,
+      config.spritesheetConfig
+    );
+  }
 }

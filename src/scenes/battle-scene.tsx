@@ -18,11 +18,7 @@ export default class BattleScene extends Phaser.Scene {
   }
 
   public preload() {
-    this.load.spritesheet(
-      girlCharacterConfig.texture,
-      girlCharacterConfig.spritesheet,
-      girlCharacterConfig.spritesheetConfig
-    );
+    BattleCharacter.preloadCharacterByConfig(this, girlCharacterConfig);
   }
 
   public create() {

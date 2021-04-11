@@ -29,11 +29,7 @@ export default class OverworldScene extends Phaser.Scene {
     this.load.image('tiles', 'assets/watertiles-extruded.png');
     this.load.tilemapTiledJSON('worldmap', 'assets/worldmap.json');
 
-    this.load.spritesheet(
-      girlCharacterConfig.texture,
-      girlCharacterConfig.spritesheet,
-      girlCharacterConfig.spritesheetConfig
-    );
+    OverworldCharacter.preloadCharacterByConfig(this, girlCharacterConfig);
   }
 
   public create() {
