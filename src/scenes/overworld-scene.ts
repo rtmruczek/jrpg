@@ -42,28 +42,10 @@ export default class OverworldScene extends Phaser.Scene {
     map = this.make.tilemap({ key: 'worldmap' });
     const tileset = map.addTilesetImage('watertiles', 'tiles', 32, 32, 1, 2);
 
-    // set collison tiles by id
-    map.setCollisionBetween(0, 3);
-    map.setCollisionBetween(5, 13);
-    map.setCollisionBetween(15, 24);
     this.collisionLayer = map.createStaticLayer(0, tileset, 0, 0);
-
-    // Visualize the colliding tiles
-    var debugGraphics = this.add.graphics();
-    debugGraphics.setScale(1);
-    map.renderDebug(debugGraphics, {
-      tileColor: new Phaser.Display.Color(0, 255, 0, 128),
-      collidingTileColor: new Phaser.Display.Color(255, 0, 0, 128),
-      faceColor: new Phaser.Display.Color(0, 0, 255, 128),
-    });
-
-    // input event handler for collision debug toggle
-    const debugCollision = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.F6
-    );
-    debugCollision.on('up', () => {
-      debugGraphics.visible = !debugGraphics.visible;
-    });
+    this.collisionLayer.setCollisionFromCollisionGroup();
+    this.matter.world.convertTilemapLayer(this.collisionLayer);
+    this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
 
     // input event handler for encounter debug toggle
     const debugEncounters = this.input.keyboard.addKey(
@@ -72,8 +54,6 @@ export default class OverworldScene extends Phaser.Scene {
     debugEncounters.on('up', () => {
       this.isEncountersEnabled = !this.isEncountersEnabled;
     });
-
-    debugGraphics.visible = false;
 
     bootstrapAnimations(this, data, 'girlsheet');
 
@@ -115,7 +95,7 @@ export default class OverworldScene extends Phaser.Scene {
   }
 
   private updatePlay() {
-    this.physics.collide(character, this.collisionLayer);
+    //this.physics.collide(character, this.collisionLayer);
 
     if (this.shouldEnterBattle()) {
       // refactor ->> move to separate ts module, export event name

@@ -1,19 +1,20 @@
 let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
-const playerSpeed = 100;
+const playerSpeed = 3;
 
-export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
+export default class GirlCharacter extends Phaser.Physics.Matter.Sprite {
   previousVelocity: Phaser.Math.Vector2;
   previousAngle: number;
 
   constructor(scene: Phaser.Scene) {
-    super(scene, 2200, 2250, 'girlsheet');
+    super(scene.matter.world, 2200, 2250, 'girlsheet');
 
     scene.add.existing(this);
-    scene.physics.add.existing(this);
+    scene.matter.world.add(this);
 
-    this.body.setSize(this.body.width, this.body.height * 0.75);
-    this.body.setOffset(0, this.height * 0.25);
+    this.setIgnoreGravity(true);
+    this.setFixedRotation();
+    this.setBounce(0);
 
     scene.events.addListener(
       'OverworldState.OS_BattleTransition',
@@ -34,28 +35,28 @@ export default class GirlCharacter extends Phaser.Physics.Arcade.Sprite {
 
   private updateMovement() {
     if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-      this.body.velocity.y = playerSpeed;
+      this.setVelocityY(playerSpeed);
     }
     if (Phaser.Input.Keyboard.JustUp(cursors.down)) {
-      this.body.velocity.y = 0;
+      this.setVelocityY(0);
     }
     if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-      this.body.velocity.x = playerSpeed;
+      this.setVelocityX(playerSpeed);
     }
     if (Phaser.Input.Keyboard.JustUp(cursors.right)) {
-      this.body.velocity.x = 0;
+      this.setVelocityX(0);
     }
     if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-      this.body.velocity.x = -playerSpeed;
+      this.setVelocityX(-playerSpeed);
     }
     if (Phaser.Input.Keyboard.JustUp(cursors.left)) {
-      this.body.velocity.x = 0;
+      this.setVelocityX(0);
     }
     if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-      this.body.velocity.y = -playerSpeed;
+      this.setVelocityY(-playerSpeed);
     }
     if (Phaser.Input.Keyboard.JustUp(cursors.up)) {
-      this.body.velocity.y = 0;
+      this.setVelocityY(0);
     }
   }
 
