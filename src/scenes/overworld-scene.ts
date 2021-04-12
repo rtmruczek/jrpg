@@ -1,6 +1,5 @@
-import data from '../data/animations/girl';
-import { bootstrapAnimations } from '../utils';
-import GirlCharacter from '../characters/girl-character';
+import girlCharacterConfig from '../data/characters/girl';
+import OverworldCharacter from '../characters/overworld-character';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -17,7 +16,6 @@ let character: Phaser.GameObjects.Sprite;
 let map: Phaser.Tilemaps.Tilemap;
 
 export default class OverworldScene extends Phaser.Scene {
-  isEncountersEnabled: boolean = false;
   distanceFromLastEncounterRoll: number = 0;
   overworldState: OverworldState = OverworldState.OS_Play;
   collisionLayer: Phaser.Tilemaps.StaticTilemapLayer;
@@ -31,10 +29,7 @@ export default class OverworldScene extends Phaser.Scene {
     this.load.image('tiles', 'assets/watertiles-extruded.png');
     this.load.tilemapTiledJSON('worldmap', 'assets/worldmap.json');
 
-    this.load.spritesheet('girlsheet', 'assets/girlsheet.png', {
-      frameWidth: 16,
-      frameHeight: 32,
-    });
+    OverworldCharacter.preloadCharacterByConfig(this, girlCharacterConfig);
   }
 
   public create() {
@@ -47,27 +42,20 @@ export default class OverworldScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(this.collisionLayer);
     this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
 
-    // input event handler for encounter debug toggle
-    const debugEncounters = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.F7
+    character = new OverworldCharacter(
+      this,
+      2200,
+      2250,
+      girlCharacterConfig.texture,
+      girlCharacterConfig.animationData
     );
-    debugEncounters.on('up', () => {
-      this.isEncountersEnabled = !this.isEncountersEnabled;
-    });
 
-    bootstrapAnimations(this, data, 'girlsheet');
-
-    character = new GirlCharacter(this);
     this.cameras.main.startFollow(character, true, 0.1, 0.1);
     this.cameras.main.setZoom(4);
   }
 
   // refactor ->> "Battle / Encounter" System should determine this
   private shouldEnterBattle() {
-    if (!this.isEncountersEnabled) {
-      return false;
-    }
-
     // distance player should move between rolls
     const stepDistance = 1000;
 
