@@ -27,12 +27,25 @@ export default class IntroScene extends Phaser.Scene {
     //  scale height/width work properly for text below
     backgroundRect.setDisplaySize(this.scale.width, this.scale.height * 2);
 
-    const text = this.add.text(0, 0, 'TODO: Title', {
+    const titleText = this.add.text(0, 0, 'TODO: Title', {
       font: '72px Courier',
       fill: '#afafaf',
     });
-    text.setPosition(this.scale.width / 2 - text.getBounds().right / 2, 30);
-    text.alpha = 0;
+    titleText.setPosition(
+      this.scale.width / 2 - titleText.getBounds().right / 2,
+      30
+    );
+    titleText.alpha = 0;
+
+    const startText = this.add.text(0, 0, 'Press Enter to Begin.', {
+      font: '24px Helvetica',
+      fill: '#afafaf',
+    });
+    startText.setPosition(
+      this.scale.width / 2 - startText.getBounds().right / 2,
+      this.scale.height - (startText.getBounds().bottom + 80)
+    );
+    startText.alpha = 0;
 
     const fadeIn = this.tweens.create({
       targets: backgroundRect,
@@ -41,12 +54,38 @@ export default class IntroScene extends Phaser.Scene {
       paused: true,
     });
 
+    const enterKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
+
+    // allow user to skip animation by pressing enter
+    enterKey.addListener('down', () => {
+      // remove the skip handler, replace with start overworld handler
+      enterKey.removeAllListeners('down');
+
+      titleText.alpha = 1;
+      startText.alpha = 1;
+      fadeIn.stop(1);
+
+      enterKey.addListener('down', () => {
+        this.scene.start('overworld');
+      });
+    });
+
     // placeholder intro animation
     fadeIn.on(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
-      text.alpha = 1;
+      titleText.alpha = 1;
 
       this.time.delayedCall(1000, () => {
-        this.scene.start('overworld');
+        // if user didn't skip the animation, remove skip handler
+        // replace with start overworld handler
+        enterKey.removeAllListeners('down');
+
+        startText.alpha = 1;
+
+        enterKey.addListener('down', () => {
+          this.scene.start('overworld');
+        });
       });
     });
 
