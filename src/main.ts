@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import OverworldScene from './scenes/overworld-scene';
 import BattleScene from './scenes/battle-scene';
+import IntroScene from './scenes/intro-scene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Sample',
@@ -23,8 +24,8 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
   },
   parent: 'game',
-  scene: [OverworldScene, BattleScene],
-  backgroundColor: '#333333',
+  scene: [IntroScene, OverworldScene, BattleScene],
+  backgroundColor: '#00000',
 };
 
 export const game = new Phaser.Game(gameConfig);
