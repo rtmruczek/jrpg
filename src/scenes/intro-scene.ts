@@ -67,9 +67,7 @@ export default class IntroScene extends Phaser.Scene {
       startText.alpha = 1;
       fadeIn.stop(1);
 
-      enterKey.addListener('down', () => {
-        this.scene.start('overworld');
-      });
+      enterKey.addListener('down', this.startGame, this);
     });
 
     // placeholder intro animation
@@ -83,12 +81,14 @@ export default class IntroScene extends Phaser.Scene {
 
         startText.alpha = 1;
 
-        enterKey.addListener('down', () => {
-          this.scene.start('overworld');
-        });
+        enterKey.addListener('down', this.startGame, this);
       });
     });
 
     fadeIn.play();
+  }
+
+  public startGame() {
+    this.scene.start('overworld');
   }
 }
