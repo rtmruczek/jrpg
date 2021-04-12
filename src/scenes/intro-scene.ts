@@ -6,6 +6,9 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'intro',
 };
 
+const title = 'TODO: Title';
+const begin = 'Press Enter to Begin.';
+
 export default class IntroScene extends Phaser.Scene {
   constructor() {
     super(sceneConfig);
@@ -27,7 +30,7 @@ export default class IntroScene extends Phaser.Scene {
     //  scale height/width work properly for text below
     backgroundRect.setDisplaySize(this.scale.width, this.scale.height * 2);
 
-    const titleText = this.add.text(0, 0, 'TODO: Title', {
+    const titleText = this.add.text(0, 0, title, {
       font: '72px Courier',
       fill: '#afafaf',
     });
@@ -37,7 +40,7 @@ export default class IntroScene extends Phaser.Scene {
     );
     titleText.alpha = 0;
 
-    const startText = this.add.text(0, 0, 'Press Enter to Begin.', {
+    const startText = this.add.text(0, 0, begin, {
       font: '24px Helvetica',
       fill: '#afafaf',
     });
@@ -79,7 +82,16 @@ export default class IntroScene extends Phaser.Scene {
         // replace with start overworld handler
         enterKey.removeAllListeners('down');
 
-        startText.alpha = 1;
+        this.tweens
+          .create({
+            targets: startText,
+            alpha: 1,
+            ease: 'sine.inout',
+            yoyo: true,
+            duration: '1500',
+            repeat: -1,
+          })
+          .play();
 
         enterKey.addListener('down', this.startGame, this);
       });
