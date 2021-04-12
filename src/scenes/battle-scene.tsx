@@ -26,8 +26,13 @@ export default class BattleScene extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.ENTER
     );
 
-    const character = new BattleCharacter(this, 850, 400, 
-      girlCharacterConfig.texture, girlCharacterConfig.animationData);
+    const character = new BattleCharacter(
+      this,
+      850,
+      400,
+      girlCharacterConfig.texture,
+      girlCharacterConfig.animationData
+    );
 
     this.cameras.main.setZoom(4);
 
@@ -36,8 +41,13 @@ export default class BattleScene extends Phaser.Scene {
 
   public update() {
     if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-      this.scene.start('overworld');
+      this.endBattle();
     }
+  }
+
+  endBattle() {
+    this.scene.start('overworld');
+    ReactDOM.render(null, document.getElementById('content'));
   }
 }
 
