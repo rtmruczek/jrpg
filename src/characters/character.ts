@@ -1,9 +1,6 @@
 import { bootstrapAnimations } from '../utils';
 
 export default class Character extends Phaser.Physics.Matter.Sprite {
-  previousVelocity: Phaser.Math.Vector2;
-  previousAngle: number;
-
   constructor(
     scene: Phaser.Scene,
     locationX: number,

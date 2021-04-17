@@ -4,9 +4,40 @@ let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
 const playerSpeed = 3;
 
+enum CardinalDirection {
+  CD_East,
+  CD_South,
+  CD_West,
+  CD_North,
+  CD_None,
+}
+
+function getCardinalDirectionByAngle(angle: number): CardinalDirection {
+  let direction = CardinalDirection.CD_None;
+
+  switch (angle) {
+    case 0:
+      direction = CardinalDirection.CD_East;
+      break;
+
+    case 90:
+      direction = CardinalDirection.CD_South;
+      break;
+
+    case 180:
+      direction = CardinalDirection.CD_West;
+      break;
+
+    case 270:
+      direction = CardinalDirection.CD_North;
+      break;
+  }
+
+  return direction;
+}
+
 export default class OverworldCharacter extends Character {
-  previousVelocity: Phaser.Math.Vector2;
-  previousAngle: number;
+  private pinDirection: CardinalDirection;
 
   constructor(
     scene: Phaser.Scene,
@@ -25,6 +56,7 @@ export default class OverworldCharacter extends Character {
       this
     );
 
+    this.pinDirection = CardinalDirection.CD_South;
     this.anims.play('facedown');
 
     cursors = scene.input.keyboard.createCursorKeys();
@@ -36,30 +68,23 @@ export default class OverworldCharacter extends Character {
   }
 
   private updateMovement() {
-    if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-      this.setVelocityY(playerSpeed);
+    let velocityX = 0,
+      velocityY = 0;
+
+    if (cursors.down.isDown) {
+      velocityY += playerSpeed;
     }
-    if (Phaser.Input.Keyboard.JustUp(cursors.down)) {
-      this.setVelocityY(0);
+    if (cursors.up.isDown) {
+      velocityY += -playerSpeed;
     }
-    if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-      this.setVelocityX(playerSpeed);
+    if (cursors.left.isDown) {
+      velocityX += -playerSpeed;
     }
-    if (Phaser.Input.Keyboard.JustUp(cursors.right)) {
-      this.setVelocityX(0);
+    if (cursors.right.isDown) {
+      velocityX += playerSpeed;
     }
-    if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-      this.setVelocityX(-playerSpeed);
-    }
-    if (Phaser.Input.Keyboard.JustUp(cursors.left)) {
-      this.setVelocityX(0);
-    }
-    if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-      this.setVelocityY(-playerSpeed);
-    }
-    if (Phaser.Input.Keyboard.JustUp(cursors.up)) {
-      this.setVelocityY(0);
-    }
+
+    this.setVelocity(velocityX, velocityY);
   }
 
   private updateAnimations() {
@@ -68,52 +93,38 @@ export default class OverworldCharacter extends Character {
       this.body.velocity.y
     );
     const angle = (velocity.angle() * Phaser.Math.RAD_TO_DEG) % 360;
+    const newPinDirection = getCardinalDirectionByAngle(angle);
+    const state = velocity.length() > 0 ? 'walk' : 'face';
 
-    // We're moving
     if (velocity.length() > 0) {
-      // what direction are we facing?
-      // Note see angle() method (+x is 0)
-      if (angle < 90) {
-        this.setFlipX(true);
-        this.anims.play('walkleft', true);
-      } else if (angle < 180) {
-        this.anims.play('walkdown', true);
-      } else if (angle < 270) {
-        this.setFlipX(false);
-        this.anims.play('walkleft', true);
-      } else {
-        this.anims.play('walkup', true);
+      if (newPinDirection != CardinalDirection.CD_None) {
+        this.pinDirection = newPinDirection;
       }
     }
-    // We're not moving
-    else {
-      // ... but we were moving
-      if (this.previousVelocity.length() > 0) {
-        // what direction were we facing?
-        if (this.previousAngle < 90) {
-          this.setFlipX(true);
-          this.anims.play('faceleft', true);
-        } else if (this.previousAngle < 180) {
-          this.anims.play('facedown', true);
-        } else if (this.previousAngle < 270) {
-          this.setFlipX(false);
-          this.anims.play('faceleft', true);
-        } else {
-          this.anims.play('faceup', true);
-        }
-      }
+
+    switch (this.pinDirection) {
+      case CardinalDirection.CD_East:
+        this.setFlipX(true);
+        this.anims.play(`${state}left`, true);
+        break;
+
+      case CardinalDirection.CD_South:
+        this.anims.play(`${state}down`, true);
+        break;
+
+      case CardinalDirection.CD_West:
+        this.setFlipX(false);
+        this.anims.play(`${state}left`, true);
+        break;
+
+      case CardinalDirection.CD_North:
+        this.anims.play(`${state}up`, true);
+        break;
     }
   }
 
   public preUpdate(time, delta) {
     super.preUpdate(time, delta);
-
-    this.previousVelocity = new Phaser.Math.Vector2(
-      this.body.velocity.x,
-      this.body.velocity.y
-    );
-    this.previousAngle =
-      (this.previousVelocity.angle() * Phaser.Math.RAD_TO_DEG) % 360;
 
     this.updateMovement();
     this.updateAnimations();
