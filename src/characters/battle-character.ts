@@ -1,9 +1,6 @@
 import Character from './character';
 
 export default class BattleCharacter extends Character {
-  previousVelocity: Phaser.Math.Vector2;
-  previousAngle: number;
-
   constructor(
     scene: Phaser.Scene,
     locationX: number,
