@@ -1,10 +1,10 @@
-import girlCharacterConfig from '../data/characters/girl';
-import OverworldCharacter from '../characters/overworld-character';
+import girlCharacterConfig from "../data/characters/girl";
+import OverworldCharacter from "../characters/overworld-character";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
-  key: 'overworld',
+  key: "overworld",
 };
 
 enum OverworldState {
@@ -18,26 +18,26 @@ let map: Phaser.Tilemaps.Tilemap;
 export default class OverworldScene extends Phaser.Scene {
   distanceFromLastEncounterRoll: number = 0;
   overworldState: OverworldState = OverworldState.OS_Play;
-  collisionLayer: Phaser.Tilemaps.StaticTilemapLayer;
+  collisionLayer: Phaser.Tilemaps.TilemapLayer;
 
   constructor() {
     super(sceneConfig);
   }
 
   public preload() {
-    this.load.audio('overworld', 'assets/music/overworldpianoflute.mp3');
-    this.load.image('tiles', 'assets/watertiles-extruded.png');
-    this.load.tilemapTiledJSON('worldmap', 'assets/worldmap.json');
+    this.load.audio("overworld", "assets/music/overworldpianoflute.mp3");
+    this.load.image("tiles", "assets/watertiles-extruded.png");
+    this.load.tilemapTiledJSON("worldmap", "assets/worldmap.json");
 
     OverworldCharacter.preloadCharacterByConfig(this, girlCharacterConfig);
   }
 
   public create() {
-    this.sound.play('overworld', { loop: true });
-    map = this.make.tilemap({ key: 'worldmap' });
-    const tileset = map.addTilesetImage('watertiles', 'tiles', 32, 32, 1, 2);
+    this.sound.play("overworld", { loop: true });
+    map = this.make.tilemap({ key: "worldmap" });
+    const tileset = map.addTilesetImage("watertiles", "tiles", 32, 32, 1, 2);
 
-    this.collisionLayer = map.createStaticLayer(0, tileset, 0, 0);
+    this.collisionLayer = map.createLayer(0, tileset, 0, 0);
     this.collisionLayer.setCollisionFromCollisionGroup();
     this.matter.world.convertTilemapLayer(this.collisionLayer);
     this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
@@ -88,7 +88,7 @@ export default class OverworldScene extends Phaser.Scene {
     if (this.shouldEnterBattle()) {
       // refactor ->> move to separate ts module, export event name
       // events/overworld/BATTLE_TRANSITION
-      this.events.emit('OverworldState.OS_BattleTransition');
+      this.events.emit("OverworldState.OS_BattleTransition");
 
       this.overworldState = OverworldState.OS_BattleTransition;
 
@@ -104,7 +104,7 @@ export default class OverworldScene extends Phaser.Scene {
             Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE,
             (): void => {
               // then enter battle scene
-              this.scene.start('battle');
+              this.scene.start("battle");
             }
           );
           this.cameras.main.fade();

@@ -24,7 +24,7 @@ const calcPosition = (windowDimension: number, canvasDimension: number) =>
   windowDimension -
   distanceFromCorner;
 
-const Window: React.FC<WindowProps> = ({ position, children }) => {
+const Window: React.FC<React.PropsWithChildren<WindowProps>> = ({ position, children }) => {
   const canvas = document.querySelector('canvas');
   const canvasHeight = parseInt(canvas.getAttribute('height'));
   const canvasWidth = parseInt(canvas.getAttribute('width'));
