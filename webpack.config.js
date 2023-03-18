@@ -32,9 +32,10 @@ module.exports = {
   mode: 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    writeToDisk: true,
-    open: true,
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
+    open: true
   },
 
   plugins: [
